@@ -9,7 +9,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.web import URL, DOM, plaintext
 from pattern.web import NODE, TEXT, COMMENT, ELEMENT, DOCUMENT
-
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 # The pattern.web module has a number of convenient search engines, as demonstrated.
 # But often you will need to handle the HTML in web pages of your interest manually.
 # The DOM object can be used for this, similar to the Javascript DOM.

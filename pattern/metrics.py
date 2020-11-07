@@ -595,18 +595,18 @@ def cooccurrence(iterable, window=(-1, -1), term1=lambda x: True, term2=lambda x
 co_occurrence = cooccurrence
 
 ## Words occuring before and after the word "cat":
-## {"cat": {"sat": 1, "black": 1, "cat": 1}}
-#s = "The black cat sat on the mat."
-#print(cooccurrence(s, window=(-1,1),
-#       search = lambda w: w in ("cat",),
-#    normalize = lambda w: w.lower().strip(".:;,!?()[]'\"")))
+# {"cat": {"sat": 1, "black": 1, "cat": 1}}
+s = "The black cat sat on the mat."
+print(cooccurrence(s, window=(-1,1),
+      search = lambda w: w in ("cat",),
+   normalize = lambda w: w.lower().strip(".:;,!?()[]'\"")))
 
-## Adjectives preceding nouns:
-## {("cat", "NN"): {("black", "JJ"): 1}}
-#s = [("The","DT"), ("black","JJ"), ("cat","NN"), ("sat","VB"), ("on","IN"), ("the","DT"), ("mat","NN")]
-#print(cooccurrence(s, window=(-2,-1),
-#       search = lambda token: token[1].startswith("NN"),
-#       filter = lambda token: token[1].startswith("JJ")))
+# Adjectives preceding nouns:
+# {("cat", "NN"): {("black", "JJ"): 1}}
+s = [("The","DT"), ("black","JJ"), ("cat","NN"), ("sat","VB"), ("on","IN"), ("the","DT"), ("mat","NN")]
+print(cooccurrence(s, window=(-2,-1),
+      search = lambda token: token[1].startswith("NN"),
+      filter = lambda token: token[1].startswith("JJ")))
 
 # Adjectives preceding nouns:
 # {("cat", "NN"): {("black", "JJ"): 1}}
