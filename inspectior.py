@@ -8,6 +8,7 @@ import hashlib
 import sys
 import unidecode
 
+
 unicode = str
 
 USER_AGENT = "Mozilla/5.0 (Windows; U; MSIE 10.0; Windows NT 9.0; es-ES)"
@@ -36,12 +37,13 @@ class Inspector:
 
         print("Checking with %s" % target)
 
-        page = requests.get(target, headers=user_agent, verify=False)
+        page = requests.get(target, headers=user_agent)
         content = page.text
 
         result = {'code': str(page.status_code),
                   'size': len(content),
-                  'md5': hashlib.md5(str("".join(str(content)))).hexdigest(),
+                  'md5':  hashlib.md5(content.encode()),
+                #   'md5': hashlib.md5(str("".join(content.encode('utf-8')))).hexdigest(),
                   'content': content,
                   'location': None}
 
@@ -50,5 +52,7 @@ class Inspector:
 
         return result
 
-i = Inspector('https://www.frysfood.com')
-print(i._give_it_a_try())
+i = Inspector('https://www.nytimes.com')
+data = i._give_it_a_try()
+# for k, v in data.items():
+print(data['location'])

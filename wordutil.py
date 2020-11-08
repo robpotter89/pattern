@@ -41,10 +41,7 @@ def sylcount(s):
 
 
 def line_sylcount(line):
-    count = 0
-    for word in line:
-        count += sylcount(word)
-    return count
+    return sum(sylcount(word) for word in line)
 
 
 def meter(word):
@@ -60,8 +57,6 @@ def meter(word):
                 m1.append(1)
             elif '2' in i:
                 m1.append(2)
-            else:
-                pass
         mx = [m1]
     elif len(pron) >= 2:
         for i in pron[0]:
@@ -71,8 +66,6 @@ def meter(word):
                 m1.append(1)
             elif '2' in i:
                 m1.append(2)
-            else:
-                pass
         for i in pron[1]:
             if '0' in i:
                 m2.append(0)
@@ -80,53 +73,46 @@ def meter(word):
                 m2.append(1)
             elif '2' in i:
                 m2.append(2)
-            else:
-                pass
         mx = [m1, m2]
     m = []
     if len(mx) == 1:
         w0 = reduce(operator.mul, mx[0], 1)
-        if w0 >= 2:
-            for i in mx[0]:
-                if i == 1:
-                    m.append('u')
-                elif i == 2:
-                    m.append('s')
-        elif w0 == 1:
-            for i in mx[0]:
+        for i in mx[0]:
+            if w0 >= 2 and i == 1 or w0 < 2 and w0 != 1 and w0 == 0 and i == 0:
+                m.append('u')
+            elif (
+                w0 >= 2
+                and i == 2
+                or w0 != 1
+                and w0 == 0
+                and i in [1, 2]
+                or w0 < 2
+                and w0 == 1
+            ):
                 m.append('s')
-        elif w0 == 0:
-            for i in mx[0]:
-                if i == 0:
-                    m.append('u')
-                elif i == 1 or i == 2:
-                    m.append('s')
     elif len(mx) == 2:
         w0 = reduce(operator.mul, mx[0], 1)
         w1 = reduce(operator.mul, mx[1], 1)
-        if w0 >= 2 and w1 >= 2:
-            for (i, j) in zip(mx[0], mx[1]):
+        for (i, j) in zip(mx[0], mx[1]):
+            if w0 >= 2 and w1 >= 2:
                 if i * j == 1:
                     m.append('u')
                 elif i * j == 4:
                     m.append('s')
                 elif i * j == 2:
                     m.append('x')
-        elif w0 == 1 and w1 == 1:
-            for (i, j) in zip(mx[0], mx[1]):
+            elif w0 == 1 and w1 == 1:
                 m.append('s')
-        elif w0 == 0 and w1 == 0:
-            for (i, j) in zip(mx[0], mx[1]):
+            elif w0 == 0 and w1 == 0:
                 if i == j and i * j >= 1:
                     m.append('s')
                 elif i != j and i * j == 0:
                     m.append('x')
-                elif i == j and i * j == 0:
+                elif i * j == 0:
                     m.append('u')
                 else:
                     m.append('x')
-        elif w0 >= 2 and w1 == 0:
-            for (i, j) in zip(mx[0], mx[1]):
+            elif w0 >= 2 and w1 == 0:
                 if i == 1 and j == 0:
                     m.append('u')
                 elif i == 2 and j == 0:
@@ -139,8 +125,7 @@ def meter(word):
                     m.append('s')
                 elif i == 2 and j == 2:
                     m.append('s')
-        elif w0 == 0 and w1 >= 2:
-            for (i, j) in zip(mx[0], mx[1]):
+            elif w0 == 0 and w1 >= 2:
                 if i == 0 and j == 1:
                     m.append('u')
                 elif i == 0 and j == 2:
@@ -153,33 +138,25 @@ def meter(word):
                     m.append('s')
                 elif i == 2 and j == 2:
                     m.append('s')
-        elif w0 == 1 and w1 >= 2:
-            for (i, j) in zip(mx[0], mx[1]):
+            elif w0 == 1 and w1 >= 2:
                 if j == 1:
                     m.append('x')
                 elif j == 2:
                     m.append('s')
-        elif w0 >= 2 and w1 == 1:
-            for (i, j) in zip(mx[0], mx[1]):
+            elif w0 >= 2 and w1 == 1:
                 if i == 1:
                     m.append('x')
                 elif i == 2:
                     m.append('s')
-        elif w0 == 1 and w1 == 0:
-            for (i, j) in zip(mx[0], mx[1]):
+            elif w0 == 1 and w1 == 0:
                 if j == 0:
                     m.append('x')
-                elif j == 1:
+                elif j in [1, 2]:
                     m.append('s')
-                elif j == 2:
-                    m.append('s')
-        elif w0 == 0 and w1 == 1:
-            for (i, j) in zip(mx[0], mx[1]):
+            elif w0 == 0 and w1 == 1:
                 if i == 0:
                     m.append('x')
-                if i == 1:
-                    m.append('s')
-                if i == 2:
+                elif i in [1, 2]:
                     m.append('s')
     return m
 
@@ -188,8 +165,7 @@ def strip_numbers(x):
     xj = '.'.join(x)
     xl = re.split('0|1|2', xj)
     xjx = ''.join(xl)
-    xlx = xjx.split('.')
-    return xlx
+    return xjx.split('.')
 
 
 def last_stressed_vowel(word):
@@ -202,33 +178,30 @@ def last_stressed_vowel(word):
         sl0 = re.split('0|1|2', sj0)
         sj1 = ''.join(p1)
         sl1 = re.split('0|1|2', sj1)
-        if len(sl1) < len(sl0):
-            pron = p1
-        else:
-            pron = p0
+        pron = p1 if len(sl1) < len(sl0) else p0
     mtr = meter(word)
     vowel_index = []
     if len(mtr) == 1:
         lsv = -1
-    elif mtr[-1] == 's' or mtr[-1] == 'x':
+    elif mtr[-1] in ['s', 'x']:
         lsv = -1
     elif mtr[-2] == 's' or mtr[-3] == 'x':
         lsv = -2
-    elif mtr[-3] == 's' or mtr[-3] == 'x':
+    elif mtr[-3] == 's':
         lsv = -3
-    elif mtr[-4] == 's' or mtr[-4] == 'x':
+    elif mtr[-4] in ['s', 'x']:
         lsv = -4
-    elif mtr[-5] == 's' or mtr[-5] == 'x':
+    elif mtr[-5] in ['s', 'x']:
         lsv = -5
-    elif mtr[-6] == 's' or mtr[-6] == 'x':
+    elif mtr[-6] in ['s', 'x']:
         lsv = -6
-    elif mtr[-7] == 's' or mtr[-7] == 'x':
+    elif mtr[-7] in ['s', 'x']:
         lsv = -7
-    elif mtr[-8] == 's' or mtr[-8] == 'x':
+    elif mtr[-8] in ['s', 'x']:
         lsv = -8
-    elif mtr[-9] == 's' or mtr[-9] == 'x':
+    elif mtr[-9] in ['s', 'x']:
         lsv = -9
-    elif mtr[-10] == 's' or mtr[-10] == 'x':
+    elif mtr[-10] in ['s', 'x']:
         lsv = -10
     else:
         lsv = -1
@@ -247,15 +220,12 @@ def rhyme_finder(word):
         ps = strip_numbers(y)
         if ps[lrp:] == rhyme_part and ps[lrp-1:] != pron[lsv-1:]:
             rhyming_words.append(x)
-        else:
-            pass
-    rw = [i for i in rhyming_words if not i == word]
-    rw2 = [j for j in rw if not j in banned_end_words]
-    return rw2
+    rw = [i for i in rhyming_words if i != word]
+    return [j for j in rw if j not in banned_end_words]
 
 def rhyming_part(word):
     if len(d[word]) <= 1:
-            pron = d[word][0]
+        pron = d[word][0]
     else:
         p0 = d[word][0]
         p1 = d[word][1]
@@ -263,10 +233,7 @@ def rhyming_part(word):
         sl0 = re.split('0|1|2', sj0)
         sj1 = ''.join(p1)
         sl1 = re.split('0|1|2', sj1)
-        if len(sl1) < len(sl0):
-            pron = p1
-        else:
-            pron = p0
+        pron = p1 if len(sl1) < len(sl0) else p0
     pron = strip_numbers(pron)
     lsv,_ = last_stressed_vowel(word)
     return pron[lsv:]
@@ -281,7 +248,7 @@ def is_iambic(words):
     words = map(lambda wrd: re.sub(r'\W+', '', wrd), words)
     m_words_stack = map(meter, words)
     m_words = [item for sublist in m_words_stack for item in sublist]
-    if len(m_words) == 0:
+    if not m_words:
         return False
     m_fits = [syl == 'x' or (syl == 'u' and (i%2 == 0)) or (syl == 's' and (i%2 == 1)) for i, syl in enumerate(m_words)]
     return reduce(lambda x,y: x and y, m_fits)

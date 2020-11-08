@@ -245,7 +245,7 @@ class TestQuantification(unittest.TestCase):
 
     def test_number(self):
         # Assert numeric string = actual number (after rounding).
-        for i in range(100):
+        for _ in range(100):
             x = random.random()
             y = en.number(en.numerals(x, round=10))
             self.assertAlmostEqual(x, y, places=10)

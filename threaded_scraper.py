@@ -51,7 +51,7 @@ class ParallelScraper:
         Start given number of threads to multi-process articles.
         '''
         while not self.queue.empty():
-            for i in range(process_threads):
+            for _ in range(process_threads):
                 p = Process(target=self.process_articles, args=())
                 p.start()
                 self.process_pool.append(p)
@@ -63,7 +63,7 @@ class ParallelScraper:
         '''
         Start a given number of threads to multi-process collection.
         '''
-        for i in range(collect_threads):
+        for _ in range(collect_threads):
             p = Process(target=self.collect_articles, args=())
             p.start()
             self.collect_pool.append(p)
